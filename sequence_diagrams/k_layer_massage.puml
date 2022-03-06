@@ -1,0 +1,33 @@
+@startuml
+title メインタスクへの描画依頼(osbook_day16f)
+[-> TimerMangaer: Tick()
+TimerMangaer -> TaskManager: SendMessage(1, kTimerTimeout)
+TaskManager -> Task_Main: SendMessage(kTimerTimeout)
+Task_Main -> Task_Main: msgs_.push
+
+====
+
+MainFunction -> Task_Main: ReceiveMessage()
+Task_Main -> Task_Main: msgs_.pop
+Task_Main --> MainFunction:
+MainFunction -> TimerMangaer: AddTimer()
+MainFunction -> TaskManager: SendMessage(terminal_id, kTimerTimeout)
+TaskManager -> Task_Terminal: SendMessage(kTimerTimeout)
+Task_Terminal -> Task_Terminal: msgs_.push
+
+====
+
+TerminalFunction -> Task_Terminal: ReceiveMessage()
+Task_Terminal -> Task_Terminal: msgs_.pop
+Task_Terminal --> TerminalFunction:
+TerminalFunction -> TaskManager: SendMessage(1, kLayer)
+TaskManager -> Task_Main: SendMessage(kLayer)
+Task_Main -> Task_Main: msgs.push
+
+====
+
+MainFunction -> Task_Main: ReceiveMessage()
+Task_Main -> Task_Main: masg.pop
+Task_Main --> MainFunction:
+MainFunction -> LayerManager: Draw()
+@enduml
