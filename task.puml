@@ -1,0 +1,45 @@
+@startuml
+class TaskManager {
+  +{method} Task& NewTask()
+  +{method} void SwtichTask(bool)
+  +{method} void Sleep(Task*)
+  +{method} Error Sleep(uint64_t)
+  +{method} void Wakeup(Task*)
+  +{method} Error Wakeup(uint64_t)
+  +{method} Error SendMessage(uint64_t, const Message&)
+  +{method} Task& CrrentTasc()
+  -{method} void ChangeLevelRunning(Task*, int)
+
+  +{field} const int kMaxLevel
+  -{field} std::vector<std::unique_ptr<Task>> tasks_
+  -{field} uint64_t latest_id_
+  -{field} std::array<std::deque<Task*>, kMaxLevel + 1> running_
+  -{field} int current_level_
+  -{field} bool level_changed_
+}
+class Task {
+  +{method} Task& InitContext(TaskFunc*, int64_t)
+  +{method} TaskContext& Context()
+  +{method} uint64_t ID() const
+  +{method} Task& Sleep()
+  +{method} Task& Wakeup()
+  +{method} void SendMessage(const Message&)
+  +{method} std::optional<Message> ReceiveMessage()
+  +{method} int Level()
+  +{method} bool Running()
+  -{method} Task& SetLevel(int)
+  -{method} SetRunning(bool)
+
+  -{field} uint64_t id_
+  -{field} std::vector<uint64_t> stack_
+  -{field} alignas(16) TaskContext context_
+  -{field} std::deque<Message> msgs_
+  -{field} uint level_{kDefaultLevel}
+  -{field} bool running_{false}
+  -{field} uint64_t id_
+}
+entity TaskContext
+
+TaskManager "1" *-- "many" Task
+Task "1" *-- "1" TaskContext
+@enduml
