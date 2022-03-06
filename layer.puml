@@ -1,0 +1,16 @@
+@startuml
+class LayerManager
+class Layer
+class ActiveLayer {
+  +{method} void SetMouseLayer(uint)
+  +{method} void SetMouseLayer(uint)
+  +{method} void Activate(uint)
+  +{method} uint GetActive()
+
+  -{field} LayerManager& manager_
+  -{field} uint active_layer_
+  -{field} uint mouse_layer_
+}
+
+class Window
+@enduml
